@@ -1,0 +1,58 @@
+syntax = "proto3";
+package SDG.Emission;
+
+option java_multiple_files = true;
+option java_package = "generated.grpc.emission";
+option java_outer_classname = "EmissionProto";
+
+//statistic for carbon emission by source type
+enum SourceType {
+  SOURCE_TYPE_UNSPECIFIED = 0;
+  GRID = 1;
+  SOLAR = 2;
+  WIND = 3;
+}
+
+/*request for carbon snapshot should include
+which part of campus to be included and the time window*/
+message SnapshotRequest {
+  string zone_id = 1;
+  int32 window_minutes = 2;
+}
+
+/*response for carbon snapshot should include
+electricity usage and weight of carbon emission
+ */
+message CarbonSnapshot {
+  double current_kwh = 1;
+  double kg_co2e = 2;
+  // kg/kwh, the factor to convert kwh to kg co2e
+  double co2e_factor = 3;
+  // peak demand in kW to help the user know if the system is overloaded
+  double peak_demand_kw = 4;
+  /*tips to help the user improve their system to reduce carbon emission
+  and save electricity*/
+  repeated string tips = 5;
+  int64 generated_at_epoch_ms = 6;
+}
+
+message UsageRecord {
+  string device_id = 1;
+  int64 timestamp_epoch_ms = 2;
+  double kwh = 3;
+  SourceType source_type = 4;
+  string zone_id = 5;
+}
+
+//calculate all records and return summary
+message BatchSummary {
+  int32 record_count = 1;
+  double total_kwh = 2;
+  double total_kg_co2e = 3;
+  repeated string anomalies = 4;
+}
+
+service EmissionAccountingService {
+  rpc GetCarbonSnapshot(SnapshotRequest) returns (CarbonSnapshot);
+  rpc UploadUsageBatch(stream UsageRecord) returns (BatchSummary);
+}
