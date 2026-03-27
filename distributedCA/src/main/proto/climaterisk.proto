@@ -6,3 +6,39 @@ option java_package = "generated.grpc.climaterisk";
 option java_outer_classname = "ClimateRiskProto";
 
 
+enum RiskType {
+  RISK_TYPE_UNSPECIFIED = 0;
+  HEAT = 1;
+  FLOOD = 2;
+  WIND = 3;
+}
+
+message AlertSubscription {
+  string zone_id = 1;
+  repeated RiskType types = 2;
+  int32 min_severity = 3;
+  int32 interval_seconds = 4;
+}
+
+message RiskAlert {
+  RiskType type = 1;
+  int32 severity = 2;
+  string message = 3;
+  repeated string recommended_actions = 4;
+  int64 epoch_ms = 5;
+}
+
+message RiskRequest {
+  string zone_id = 1;
+}
+
+message RiskState {
+  string zone_id = 1;
+  repeated RiskAlert current = 2;
+  int64 epoch_ms = 3;
+}
+
+service ClimateRiskAlertService {
+  rpc SubscribeAlerts(AlertSubscription) returns (stream RiskAlert);
+  rpc GetCurrentRisk(RiskRequest) returns (RiskState);
+}

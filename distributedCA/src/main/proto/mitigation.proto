@@ -4,3 +4,46 @@ package SDG.Mitigation;
 option java_multiple_files = true;
 option java_package = "generated.grpc.mitigation";
 option java_outer_classname = "MitigationProto";
+
+enum TargetService {
+  TARGET_SERVICE_UNSPECIFIED = 0;
+  HVAC = 1;
+  EV = 2;
+  ALERT = 3;
+}
+
+enum StrategyStatus {
+  STRATEGY_STATUS_UNSPECIFIED = 0;
+  ACCEPTED = 1;
+  RUNNING = 2;
+  DONE = 3;
+  FAILED = 4;
+}
+
+message ControlCommand {
+  string strategy_id = 1;
+  TargetService target = 2;
+  map<string,string> params = 3;
+}
+
+message ControlEvent {
+  string strategy_id = 1;
+  StrategyStatus status = 2;
+  map<string,string> telemetry = 3;
+  string error_detail = 4;
+  int64 epoch_ms = 5;
+}
+
+message CancelRequest {
+  string strategy_id = 1;
+}
+
+message CancelReply {
+  bool ok = 1;
+  string message = 2;
+}
+
+service MitigationOrchestratorService {
+  rpc RunControlLoop(stream ControlCommand) returns (stream ControlEvent);
+  rpc CancelStrategy(CancelRequest) returns (CancelReply);
+}
