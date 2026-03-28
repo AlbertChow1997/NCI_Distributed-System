@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+//This class is used to store the registry entries.
+
 public class RegistryStore {
 
+    //Registry entry
     public static class Entry {
         public final String host;
         public final int port;
