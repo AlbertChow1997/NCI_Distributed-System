@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-//This class is used to store the registry entries.
+// This class is used to store the registered services in memory.
+// The idea is simple because this project is only for CA demo, so database is not necessary here.
 
 public class RegistryStore {
 
-    //Registry entry
+    // One entry means one running service endpoint.
     public static class Entry {
         public final String host;
         public final int port;
