@@ -13,6 +13,7 @@ public class EmissionServer {
     private final Server server;
 
     public EmissionServer() {
+        // This server hosts the emission accounting service implementation.
         this.server = ServerBuilder.forPort(ServiceDirectory.EMISSION_PORT)
                 .addService(new EmissionAccountingServiceImpl())
                 .build();
@@ -20,6 +21,7 @@ public class EmissionServer {
 
     public void start() throws IOException {
         server.start();
+        System.out.println("Emission Server started on port " + ServiceDirectory.EMISSION_PORT);
         ServiceRegistrar.register(ServiceDirectory.EMISSION_SERVICE, ServiceDirectory.EMISSION_PORT, "1.0.0",
                 List.of("GetCarbonSnapshot", "UploadUsageBatch"),
                 Map.of("transport", "grpc", "streaming", "client"));
@@ -31,6 +33,7 @@ public class EmissionServer {
 
     public void stop() {
         server.shutdownNow();
+        System.out.println("Emission Server stopped.");
     }
 
     public static void main(String[] args) throws Exception {

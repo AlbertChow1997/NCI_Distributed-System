@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public final class ServiceRegistrar {
+    // This utility is used by each service server when it starts.
+    // It sends one unary Register RPC to the Naming Service.
     private ServiceRegistrar() {
     }
 
@@ -19,7 +21,7 @@ public final class ServiceRegistrar {
         try {
             NamingServiceGrpc.NamingServiceBlockingStub stub = NamingServiceGrpc.newBlockingStub(channel)
                     .withDeadlineAfter(3, TimeUnit.SECONDS);
-            return stub.register(ServiceInfo.newBuilder()
+            RegisterReply reply = stub.register(ServiceInfo.newBuilder()
                     .setServiceName(serviceName)
                     .setHost(ServiceDirectory.HOST)
                     .setPort(port)
@@ -27,6 +29,8 @@ public final class ServiceRegistrar {
                     .addAllCapabilities(capabilities)
                     .putAllMetadata(metadata)
                     .build());
+            System.out.println("Registered service: " + serviceName + " on port " + port);
+            return reply;
         } finally {
             channel.shutdownNow();
         }

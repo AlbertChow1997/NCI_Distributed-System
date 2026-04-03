@@ -1,6 +1,8 @@
 package sdg.common;
 
 public final class ServiceDirectory {
+    // All service names and ports are kept here.
+    // This makes the project easier to read and change later.
     public static final String HOST = "localhost";
 
     public static final String NAMING_SERVICE = "NamingService";
