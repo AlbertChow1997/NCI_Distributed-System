@@ -419,7 +419,8 @@ public class SmartClimateControllerFrame extends JFrame {
 
     private String friendlyError(Throwable throwable) {
         if (throwable instanceof StatusRuntimeException statusEx) {
-            return "RPC error -> " + statusEx.getStatus().getCode() + ": " + statusEx.getStatus().getDescription();
+            return "RPC error -> " + statusEx.getStatus().getCode() + ": "
+                    + statusEx.getStatus().getDescription();
         }
         return "Error -> " + throwable.getMessage();
     }
